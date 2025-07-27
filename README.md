@@ -91,5 +91,9 @@ deactivate
 
 ---
 
+[Open PDF](fastapi.pdf)
+
+---
+
 © 2025 Gaurav — Feel free to copy, adapt, and share.
 
