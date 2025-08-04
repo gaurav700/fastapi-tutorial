@@ -132,5 +132,8 @@ def insert_patient_data(patient: Patient):
     print("Allergies : " + str(patient.allergies))
     print("Contact : " + str(patient.contact))
 
+# Another way of serialization
+print(patient1.model_dump())
+
 # calling function
 insert_patient_data(patient1)
