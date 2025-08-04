@@ -93,8 +93,21 @@
 # patient1 = Patient(**PATIENT_INFO)
 # insert_patient_data(patient1)
 
-from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator, computed_field
-from typing import List, Dict
+
+
+
+
+from Patient import Patient
+from Address import Address
+
+ADDRESS_INFO = {
+    "street": "4281 Chestnut ridge rd",
+    "city": "Buffalo",
+    "state": "New york",
+    "pinCode": "14228",
+    "emergency": "123-456-7890" 
+}
+contact = Address(**ADDRESS_INFO)
 
 PATIENT_INFO = { 
     "name" : "Gaurav", 
@@ -104,44 +117,9 @@ PATIENT_INFO = {
     "weight" : 210.35,
     "height" : 165,
     "allergies" : ['Pollen', 'dust'],
-    "contact" : {
-        "address" : "4281 Chestnut ridge rd, Buffalo, NY, 14228",
-        "phone" : "8483638754"
-    }
+    "contact" : contact
 } 
-
-# Creating pydantic base model
-class Patient(BaseModel):
-    name: str
-    email: EmailStr
-    age: int
-    weight: float
-    height : int
-    allergies: List[str]
-    contact: Dict[str, str]
-
-    @computed_field
-    @property
-    def calcuate_bmi(self) -> float:
-        return round(self.weight / (self.height ** 2), 2)
-
-    @model_validator(mode='after')
-    def validate_emergency_contact(cls, model):
-        if  model.age > 60 and 'emergency' not in model.contact:
-            raise ValueError('Emergency contact is required for senior citizens')
-        return model
-
-    @field_validator('email', mode='before')
-    @classmethod
-    def email_validator(cls, value):
-        valid_domains = ['hdfc.com', 'icici.com']
-        domain_name = value.split('@')[-1]
-        if domain_name not in valid_domains:
-            raise ValueError('Invalid email domain')
-        return value
-
-    class Config:
-        extra = 'ignore'  # Ignores unknown fields like 'website'
+patient1 = Patient(**PATIENT_INFO)
 
 # Defining function
 def insert_patient_data(patient: Patient):
@@ -155,5 +133,4 @@ def insert_patient_data(patient: Patient):
     print("Contact : " + str(patient.contact))
 
 # calling function
-patient1 = Patient(**PATIENT_INFO)
 insert_patient_data(patient1)
