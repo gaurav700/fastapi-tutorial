@@ -93,12 +93,12 @@
 # patient1 = Patient(**PATIENT_INFO)
 # insert_patient_data(patient1)
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 from typing import List, Dict
 
 PATIENT_INFO = { 
     "name" : "Gaurav", 
-    "age" : 28,
+    "age" : 60,
     "email" : "Gaurav@hdfc.com",
     "website" : "https://linkedin.com/in/gaurav6342",
     "weight" : 210.35,
@@ -117,6 +117,12 @@ class Patient(BaseModel):
     weight: float
     allergies: List[str]
     contact: Dict[str, str]
+
+    @model_validator(mode='after')
+    def validate_emergency_contact(cls, model):
+        if  model.age > 60 and 'emergency' not in model.contact:
+            raise ValueError('Emergency contact is required for senior citizens')
+        return model
 
     @field_validator('email', mode='before')
     @classmethod
