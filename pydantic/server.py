@@ -93,7 +93,7 @@
 # patient1 = Patient(**PATIENT_INFO)
 # insert_patient_data(patient1)
 
-from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator, computed_field
 from typing import List, Dict
 
 PATIENT_INFO = { 
@@ -102,6 +102,7 @@ PATIENT_INFO = {
     "email" : "Gaurav@hdfc.com",
     "website" : "https://linkedin.com/in/gaurav6342",
     "weight" : 210.35,
+    "height" : 165,
     "allergies" : ['Pollen', 'dust'],
     "contact" : {
         "address" : "4281 Chestnut ridge rd, Buffalo, NY, 14228",
@@ -115,8 +116,14 @@ class Patient(BaseModel):
     email: EmailStr
     age: int
     weight: float
+    height : int
     allergies: List[str]
     contact: Dict[str, str]
+
+    @computed_field
+    @property
+    def calcuate_bmi(self) -> float:
+        return round(self.weight / (self.height ** 2), 2)
 
     @model_validator(mode='after')
     def validate_emergency_contact(cls, model):
@@ -142,6 +149,8 @@ def insert_patient_data(patient: Patient):
     print("Age : " + str(patient.age))
     print("Email : " + str(patient.email))
     print("Weight : " + str(patient.weight))
+    print("Height : " + str(patient.height))
+    print("BMI : " + str(patient.calcuate_bmi))
     print("Allergies : " + str(patient.allergies))
     print("Contact : " + str(patient.contact))
 
